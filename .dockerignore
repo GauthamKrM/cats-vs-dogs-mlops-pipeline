@@ -1,0 +1,26 @@
+# Exclude version control
+.git
+.gitignore
+
+# Exclude local environment files
+.env
+.env.example
+venv/
+env/
+
+# Exclude python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Exclude data (large files)
+data/
+
+# Exclude tests and notebooks
+tests/
+notebooks/
+
+# Exclude IDE settings
+.vscode/
+.idea/

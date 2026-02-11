@@ -1,0 +1,51 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: python src/train.py --data_dir data --epochs 5 --batch_size 32 --lr 
+      0.001
+    deps:
+    - path: data/Cat
+      hash: md5
+      md5: b997c8af1a1cea6387367948eef1ddb3.dir
+      size: 388422190
+      nfiles: 12499
+    - path: data/Dog
+      hash: md5
+      md5: e977e9666bdb6935f2faca1a9556a1aa.dir
+      size: 460444220
+      nfiles: 12499
+    - path: src/data_loader.py
+      hash: md5
+      md5: 8a9c5a2ebb51676961178a1454d77e8a
+      size: 4181
+    - path: src/train.py
+      hash: md5
+      md5: f5655d70be6cba5a3fca4940ca9c9c4f
+      size: 4339
+    params:
+      params.yaml:
+        batch_size: 32
+        data_dir: data
+        epochs: 5
+        learning_rate: 0.001
+    outs:
+    - path: models/model.pt
+      hash: md5
+      md5: 0052dc23fe068f13e56cb95a238b9b9f
+      size: 44780939
+  evaluate:
+    cmd: python src/evaluate.py --model_path models/model.pt --data_dir data
+    deps:
+    - path: models/model.pt
+      hash: md5
+      md5: 0052dc23fe068f13e56cb95a238b9b9f
+      size: 44780939
+    - path: src/evaluate.py
+      hash: md5
+      md5: 223b2b2f05564b25873732db1a9e4e32
+      size: 2009
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: 8f409e5f6c120dcd4d25cdfa8160fdf8
+      size: 84

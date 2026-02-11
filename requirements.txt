@@ -1,0 +1,16 @@
+torch
+torchvision
+mlflow
+dvc
+fastapi
+uvicorn
+pytest
+requests
+prometheus-fastapi-instrumentator
+scikit-learn
+pandas
+numpy
+pillow
+python-dotenv
+httpx
+python-multipart

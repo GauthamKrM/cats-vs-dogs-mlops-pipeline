@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cats-vs-dogs-inference
+  labels:
+    app: cats-vs-dogs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cats-vs-dogs
+  template:
+    metadata:
+      labels:
+        app: cats-vs-dogs
+    spec:
+      containers:
+      - name: inference-container
+        image: docker.io/gauthamkrm/cats-vs-dogs-app:latest 
+        imagePullPolicy: Always 
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
