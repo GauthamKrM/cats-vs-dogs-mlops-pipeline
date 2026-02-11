@@ -33,9 +33,11 @@ jobs:
     - name: Generate Dummy Data for CI
       run: |
         mkdir -p data/Cat data/Dog
-        # Create dummy images
-        python -c "from PIL import Image; import numpy as np; Image.fromarray(np.random.randint(0,255,(224,224,3),dtype='uint8')).save('data/Cat/dummy.jpg')"
-        python -c "from PIL import Image; import numpy as np; Image.fromarray(np.random.randint(0,255,(224,224,3),dtype='uint8')).save('data/Dog/dummy.jpg')"
+        # Create dummy images (at least 20 total to ensure non-zero splits)
+        # 10 Cats
+        python -c "from PIL import Image; import numpy as np; [Image.fromarray(np.random.randint(0,255,(224,224,3),dtype='uint8')).save(f'data/Cat/cat_{i}.jpg') for i in range(10)]"
+        # 10 Dogs
+        python -c "from PIL import Image; import numpy as np; [Image.fromarray(np.random.randint(0,255,(224,224,3),dtype='uint8')).save(f'data/Dog/dog_{i}.jpg') for i in range(10)]"
 
     - name: Run Model Training Smoke Test
       run: |

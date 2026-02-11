@@ -81,8 +81,12 @@ def train_model(data_dir, epochs=5, learning_rate=0.001, batch_size=32):
                     val_total += labels.size(0)
                     val_correct += (predicted == labels).sum().item()
             
-            val_epoch_loss = val_loss / len(val_loader.dataset)
-            val_epoch_acc = val_correct / val_total
+            if len(val_loader.dataset) > 0:
+                val_epoch_loss = val_loss / len(val_loader.dataset)
+                val_epoch_acc = val_correct / val_total
+            else:
+                val_epoch_loss = 0.0
+                val_epoch_acc = 0.0
             
             print(f"Epoch {epoch+1}/{epochs} - Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f} Val Loss: {val_epoch_loss:.4f} Val Acc: {val_epoch_acc:.4f}")
             
