@@ -11,12 +11,13 @@ from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
-    Instrumentator().instrument(app).expose(app)
+    # Startup: Load model
     load_model()
     yield
 
 app = FastAPI(title="Cats vs Dogs Inference API", lifespan=lifespan)
+
+Instrumentator().instrument(app).expose(app)
 
 # Global model variable
 model = None
