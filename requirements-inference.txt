@@ -1,0 +1,10 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+torchvision
+fastapi
+uvicorn
+pillow
+python-dotenv
+prometheus-fastapi-instrumentator
+python-multipart
+# Exclude training/heavy libs: dvc, mlflow, pandas, sklearn, pytest

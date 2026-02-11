@@ -5,8 +5,8 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements-inference.txt .
+RUN pip install --no-cache-dir -r requirements-inference.txt
 
 # Copy source code
 COPY src/ src/
