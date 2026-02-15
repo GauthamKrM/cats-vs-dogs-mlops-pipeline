@@ -16,12 +16,12 @@ stages:
       nfiles: 12499
     - path: src/data_loader.py
       hash: md5
-      md5: 8a9c5a2ebb51676961178a1454d77e8a
-      size: 4181
+      md5: 91fffeaac7e827c595deaba4dc867eb7
+      size: 2650
     - path: src/train.py
       hash: md5
-      md5: f5655d70be6cba5a3fca4940ca9c9c4f
-      size: 4339
+      md5: 114249865e21619f0da69abd248d58df
+      size: 4486
     params:
       params.yaml:
         batch_size: 32
@@ -31,21 +31,21 @@ stages:
     outs:
     - path: models/model.pt
       hash: md5
-      md5: 0052dc23fe068f13e56cb95a238b9b9f
+      md5: 78962bcd6f87a8d72528d9822d21f836
       size: 44780939
   evaluate:
     cmd: python src/evaluate.py --model_path models/model.pt --data_dir data
     deps:
     - path: models/model.pt
       hash: md5
-      md5: 0052dc23fe068f13e56cb95a238b9b9f
+      md5: 78962bcd6f87a8d72528d9822d21f836
       size: 44780939
     - path: src/evaluate.py
       hash: md5
-      md5: 223b2b2f05564b25873732db1a9e4e32
-      size: 2009
+      md5: 3d8d2af2be1f96e353229f1196ce295a
+      size: 1997
     outs:
     - path: metrics.json
       hash: md5
-      md5: 8f409e5f6c120dcd4d25cdfa8160fdf8
-      size: 84
+      md5: 368dd512a52f5acd3b1c6f055c687879
+      size: 83
