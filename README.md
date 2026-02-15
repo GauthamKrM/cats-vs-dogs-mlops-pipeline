@@ -66,7 +66,7 @@ data/
   Dog/
 ```
 
-### 2. Run Pipeline
+### 2. Run Pipeline (Experiment Repro)
 To reproduce the entire pipeline (prepare -> train -> evaluate):
 ```bash
 dvc exp run
@@ -76,8 +76,15 @@ This command will:
 -   Log metrics, params, and the model artifact to MLflow.
 -   Execute `src/evaluate.py` to generate `metrics.json`.
 
+**View Metrics & Diffs:**
+```bash
+dvc metrics show
+dvc metrics diff  # Compare with previous run
+```
+
 ### 3. Hyperparameters
 Modify `params.yaml` to change training configurations (epochs, batch_size, learning_rate).
+Running `dvc exp run` again will detect changes and re-run necessary stages.
 
 ## Docker & Inference
 
@@ -121,14 +128,49 @@ The project includes a **GitHub Actions** workflow (`.github/workflows/ci.yml`) 
 -   Updates the Kubernetes manifests in `deploy/` with the new image tag (GitOps approach).
 -   (Optional) Triggers ArgoCD or applies manifests to a cluster.
 
-## Deployment
+## Deployment (Minikube)
 
-Deploy to Kubernetes using the manifests in `deploy/`:
+### Prerequisites
+-   Minikube installed & running (`minikube start`)
+-   `kubectl` installed
+
+### 1. Build Image in Minikube's Docker Engine
+To ensure Minikube can find your image without a registry push:
+```bash
+minikube docker-env | Invoke-Expression  # Windows PowerShell
+# OR
+eval $(minikube docker-env)              # Linux/Mac
+```
+Now build the image:
+```bash
+docker build -t cats-vs-dogs-inference .
+```
+
+### 2. Apply Manifests
+Deploy the application and service to the cluster:
 ```bash
 kubectl apply -f deploy/deployment.yaml
 kubectl apply -f deploy/service.yaml
 ```
 
+### 3. Verification
+Check the status of your pods:
+```bash
+kubectl get pods
+```
+
+### 4. Access the Service
+Since we use `NodePort` or `ClusterIP`, port-forward to access locally:
+```bash
+kubectl port-forward svc/cats-vs-dogs-service 8000:80
+```
+Now access the API at `http://localhost:8000/docs`.
+
+### 5. Smoke Test
+Run the post-deployment smoke test:
+```bash
+python tests/smoke_test.py --url http://localhost:8000
+```
 ## Monitoring
 
 -   **FastAPI Instrumentation**: The app exposes Prometheus metrics at `/metrics` (enabled via `prometheus-fastapi-instrumentator`).
