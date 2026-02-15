@@ -31,7 +31,7 @@ This repository contains an end-to-end MLOps pipeline for binary image classific
 
 1.  **Clone the repository:**
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/GauthamKrM/cats-vs-dogs-mlops-pipeline
     cd cats-vs-dogs-mlops-pipeline
     ```
 
