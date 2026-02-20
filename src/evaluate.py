@@ -12,6 +12,10 @@ import argparse
 import json
 
 def evaluate_model(model_path, data_dir, batch_size=32):
+
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"Model file not found: {model_path}")
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     # Load Data
@@ -45,6 +49,14 @@ def evaluate_model(model_path, data_dir, batch_size=32):
     test_acc = correct / total
     
     print(f"Test Loss: {test_loss:.4f} Test Acc: {test_acc:.4f}")
+
+    import mlflow
+
+    mlflow.set_experiment("cats_vs_dogs")
+
+    with mlflow.start_run(run_name="evaluation"):
+        mlflow.log_metric("test_loss", test_loss)
+        mlflow.log_metric("test_accuracy", test_acc)
     
     # Save Metrics
     metrics = {
