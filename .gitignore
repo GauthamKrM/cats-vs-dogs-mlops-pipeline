@@ -45,3 +45,4 @@ metrics.json
 
 # Project specific
 models/model.pt
+mlruns/
