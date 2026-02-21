@@ -1,16 +1,26 @@
-torch
-torchvision
-mlflow
-dvc
-fastapi
-uvicorn
-pytest
-requests
-prometheus-fastapi-instrumentator
-scikit-learn
-pandas
-numpy
-pillow
-python-dotenv
-httpx
-python-multipart
+# Core ML
+torch==2.10.0
+torchvision==0.25.0
+numpy==2.4.2
+scikit-learn==1.8.0
+pandas==2.3.3
+pillow==12.1.1
+matplotlib==3.10.8
+
+# Experiment Tracking & Pipeline
+mlflow==3.10.0
+dvc==3.66.1
+
+# Inference API
+fastapi==0.129.0
+uvicorn==0.41.0
+python-multipart==0.0.22
+prometheus-fastapi-instrumentator==7.1.0
+
+# Utilities
+python-dotenv==1.2.1
+requests==2.32.5
+httpx==0.28.1
+
+# Testing
+pytest==9.0.2
