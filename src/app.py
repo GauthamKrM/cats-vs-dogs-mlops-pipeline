@@ -102,8 +102,8 @@ async def predict(file: UploadFile = File(...)):
             }
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
         logger.error(f"Prediction error: {str(e)}") #error_logging
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     uvicorn.run("src.app:app", host="0.0.0.0", port=8000, reload=True)
