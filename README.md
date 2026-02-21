@@ -19,7 +19,6 @@ This repository contains an end-to-end MLOps pipeline for binary image classific
 ├── tests/               # Unit and integration tests
 ├── .dockerignore        # Docker build context exclusions
 ├── .gitignore           # Git exclusions
-├── docker-compose.yml   # (Optional) Local composition
 ├── Dockerfile           # Container definition
 ├── dvc.yaml             # DVC pipeline stages
 ├── params.yaml          # DVC/Training hyperparameters
@@ -49,7 +48,7 @@ This repository contains an end-to-end MLOps pipeline for binary image classific
 4.  **Set up Environment Variables:**
     Create a `.env` file in the root directory (copy from `.env.example` if available) to store secrets like MLflow credentials (if using a remote server like Dagshub).
     ```ini
-    MLFLOW_TRACKING_URI=https://dagshub.com/...
+    MLFLOW_TRACKING_URI=...
     MLFLOW_TRACKING_USERNAME=...
     MLFLOW_TRACKING_PASSWORD=...
     ```
@@ -104,6 +103,7 @@ Access the API documentation at `http://localhost:8000/docs`.
 ### API Endpoints
 -   **GET /health**: Check service status.
 -   **POST /predict**: Upload an image to get a classification (Cat/Dog).
+-   **GET /metrics**: Exposes Prometheus metrics.
 
 ## Testing
 
@@ -122,11 +122,7 @@ The project includes a **GitHub Actions** workflow (`.github/workflows/ci.yml`) 
 3.  **Run Unit Tests** (`pytest`)
 4.  **Download Model**: Fetches the best trained model from MLflow.
 5.  **Build Docker Image**: Packages the application with the model.
-6.  **Push to Registry**: Pushes the image to Docker Hub / GHCR.
-
-**CD Steps:**
--   Updates the Kubernetes manifests in `deploy/` with the new image tag (GitOps approach).
--   (Optional) Triggers ArgoCD or applies manifests to a cluster.
+6.  **Push to Registry**: Pushes the image to Docker Hub.
 
 ## Deployment (Minikube)
 
@@ -134,39 +130,27 @@ The project includes a **GitHub Actions** workflow (`.github/workflows/ci.yml`) 
 -   Minikube installed & running (`minikube start`)
 -   `kubectl` installed
 
-### 1. Build Image in Minikube's Docker Engine
-To ensure Minikube can find your image without a registry push:
-```bash
-minikube docker-env | Invoke-Expression  # Windows PowerShell
-# OR
-eval $(minikube docker-env)              # Linux/Mac
-```
-Now build the image:
-```bash
-docker build -t cats-vs-dogs-inference .
-```
-
-### 2. Apply Manifests
-Deploy the application and service to the cluster:
+### 1. Apply Manifests
+Deploy the application and service to the cluster since the `deploy/deployment.yaml` is pre-configured to pull the `docker.io/gauthamkrm/cats-vs-dogs-app:latest` image directly from DockerHub:
 ```bash
 kubectl apply -f deploy/deployment.yaml
 kubectl apply -f deploy/service.yaml
 ```
 
-### 3. Verification
+### 2. Verification
 Check the status of your pods:
 ```bash
 kubectl get pods
 ```
 
-### 4. Access the Service
+### 3. Access the Service
 Since we use `NodePort` or `ClusterIP`, port-forward to access locally:
 ```bash
 kubectl port-forward svc/cats-vs-dogs-service 8000:80
 ```
 Now access the API at `http://localhost:8000/docs`.
 
-### 5. Smoke Test
+### 4. Smoke Test
 Run the post-deployment smoke test:
 ```bash
 python tests/smoke_test.py --url http://localhost:8000

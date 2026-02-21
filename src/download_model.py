@@ -51,8 +51,27 @@ def download_best_model(output_path="models/model.pt", metric="accuracy"):
         # Create output directory
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         
-        local_path = client.download_artifacts(run_id, "model.pt", dst_path=os.path.dirname(output_path))
-        print(f"Model downloaded to {local_path}")
+        local_path = client.download_artifacts(
+            run_id,
+            "model.pt",
+            dst_path=os.path.dirname(output_path)
+        )
+
+        # Handle case where MLflow returns directory or file
+        if os.path.isdir(local_path):
+            downloaded_file = os.path.join(local_path, "model.pt")
+        else:
+            downloaded_file = local_path
+
+        # Verify model file exists
+        if not os.path.exists(downloaded_file):
+            raise FileNotFoundError("Downloaded model file not found.")
+
+        # Verify model file is not empty
+        if os.path.getsize(downloaded_file) == 0:
+            raise ValueError("Downloaded model file is empty.")
+
+        print(f"Model downloaded successfully at {downloaded_file}")
         
     except Exception as e:
         print(f"Error downloading model: {e}")
