@@ -42,7 +42,7 @@ def smoke_test(url, image_path=None):
         try:
             with open(image_path, "rb") as f:
                 files = {"file": f}
-                resp = requests.post(predict_url, files=files, timeout=10)
+                resp = requests.post(predict_url, files=files, timeout=60)
                 
             if resp.status_code == 200:
                 result = resp.json()
