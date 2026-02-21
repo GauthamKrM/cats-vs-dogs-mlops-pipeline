@@ -1,18 +1,18 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
 
 # Core ML (CPU-only for lightweight container)
-torch==2.10.0
-torchvision==0.25.0
-pillow==12.1.1
-numpy==2.4.2
+torch
+torchvision
+pillow
+numpy
 
 # Inference API
-fastapi==0.129.0
-uvicorn==0.41.0
-python-multipart==0.0.22
-prometheus-fastapi-instrumentator==7.1.0
+fastapi
+uvicorn
+python-multipart
+prometheus-fastapi-instrumentator
 
 # Utilities
-python-dotenv==1.2.1
+python-dotenv
 
 # Exclude training/heavy libs: dvc, mlflow, pandas, sklearn, pytest, matplotlib
