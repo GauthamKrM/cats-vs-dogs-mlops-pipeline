@@ -34,6 +34,8 @@ def evaluate_model(model_path, data_dir, batch_size=32):
     running_loss = 0.0
     correct = 0
     total = 0
+    all_preds = []
+    all_labels = []
     
     with torch.no_grad():
         for inputs, labels in test_loader:
@@ -45,18 +47,39 @@ def evaluate_model(model_path, data_dir, batch_size=32):
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
             
+            all_preds.extend(predicted.cpu().numpy())
+            all_labels.extend(labels.cpu().numpy())
+            
     test_loss = running_loss / len(test_loader.dataset)
     test_acc = correct / total
     
     print(f"Test Loss: {test_loss:.4f} Test Acc: {test_acc:.4f}")
 
     import mlflow
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    from sklearn.metrics import confusion_matrix
+
+    # Generate Confusion Matrix
+    cm = confusion_matrix(all_labels, all_preds)
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Cat', 'Dog'], yticklabels=['Cat', 'Dog'])
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+    plt.title('Confusion Matrix')
+    cm_path = "confusion_matrix.png"
+    plt.savefig(cm_path)
+    plt.close()
 
     mlflow.set_experiment("cats_vs_dogs")
 
     with mlflow.start_run(run_name="evaluation"):
         mlflow.log_metric("test_loss", test_loss)
         mlflow.log_metric("test_accuracy", test_acc)
+        mlflow.log_artifact(cm_path)
+    
+    # Clean up local artifact
+    os.remove(cm_path)
     
     # Save Metrics
     metrics = {
