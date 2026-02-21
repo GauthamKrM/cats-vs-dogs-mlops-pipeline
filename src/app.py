@@ -6,8 +6,14 @@ from PIL import Image
 import io
 import os
 from prometheus_fastapi_instrumentator import Instrumentator
-
+import logging
+import time
+from datetime import datetime
 from contextlib import asynccontextmanager
+
+# configure logger
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -62,6 +68,7 @@ def transform_image(image_bytes):
 async def predict(file: UploadFile = File(...)):
     if model is None:
         raise HTTPException(status_code=503, detail="Model not loaded")
+    start_time = time.time()
     
     try:
         contents = await file.read()
@@ -74,6 +81,17 @@ async def predict(file: UploadFile = File(...)):
             
         classes = ['Cat', 'Dog']
         class_name = classes[predicted.item()]
+        confidence = probs[0][predicted.item()].item() # calculates_logger_info
+
+        latency = time.time() - start_time #calcultes logging
+
+        #logging
+        logger.info(
+        f"{datetime.now()} | "
+        f"Prediction: {class_name} | "
+        f"Confidence: {confidence:.4f} | "
+        f"Latency: {latency:.4f}s"
+    )
         
         return {
             "prediction": class_name,
@@ -85,6 +103,7 @@ async def predict(file: UploadFile = File(...)):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Prediction error: {str(e)}") #error_logging
 
 if __name__ == "__main__":
     uvicorn.run("src.app:app", host="0.0.0.0", port=8000, reload=True)
